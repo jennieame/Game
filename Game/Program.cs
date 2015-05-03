@@ -14,6 +14,7 @@ namespace Game
         static bool PlayGame = true;
         static int _countDown = 5;
         static string Name { get; set; }
+        static string ChoosenLevel { get; set; }
         static int Score { get; set; }
 
         public static void Main()
@@ -23,11 +24,13 @@ namespace Game
             Console.Write("Enter your name: ");
             Name = Console.ReadLine().ToLower();
             Console.Clear();
+            Console.Write("Choose Level: ");
+            ChoosenLevel = Console.ReadLine().ToLower();
 
             while(true)
             {
                 BeforeGame();
-                Game(true, Name);
+                Game(true, Name, ChoosenLevel);
                 GameOver();
             } 
         }
@@ -86,7 +89,7 @@ namespace Game
             Console.WriteLine("================================================");
             Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
 
-            Console.WriteLine("\nPress any key to continue, q for exit...");
+            Console.WriteLine("\nPress enter to continue, q for exit...");
             string _startOver = Console.ReadLine();
 
             if (_startOver == "q")
@@ -101,7 +104,7 @@ namespace Game
             }
         }
 
-        static void Game(bool play, string name)
+        static void Game(bool play, string name, string ChoosenLevel)
         {
             if (play)
             {
@@ -113,11 +116,24 @@ namespace Game
                 aTimer = new System.Timers.Timer(1000);
                 aTimer.Elapsed += ClockEvent;
                 aTimer.Enabled = true;
+                string randomChar;
 
                 while (PlayGame)
                 {
-                    //string randomChar = RandomLetter.GetLetter();
-                    string randomChar = Level.GetShortWord();
+                    if (ChoosenLevel == "m")
+                    {
+                        randomChar = Level.GetShortWord();
+                    }
+                    else if (ChoosenLevel == "h")
+                    {
+                        //string randomChar = Level.GetLongWord();
+                        randomChar = "svårt";
+                    }
+                    else
+                    {
+                        randomChar = Level.GetLetter();
+                    }
+                    
                     Console.SetCursorPosition(2, 2);
                     Console.WriteLine(randomChar);
                     var answer = "";
@@ -145,14 +161,7 @@ namespace Game
                         Console.SetCursorPosition(2, 2);
                     }
                 }
-
-
             }
-        }
-
-        private static void EndGame(Object source, ElapsedEventArgs e)
-        {
-            PlayGame = false;
         }
 
         public static void ClearCurrentConsoleLine()
@@ -193,7 +202,7 @@ namespace Game
         {
             List<string> list = new List<string> { 
                 "add", "age", "abs", "and", "buy", "big", "bud", "bin", "cop", "car", "cry", "cop", "cod", "dad", "duh",
-                "dot", "day", "die", "did", "ear", "end", "eve", "fan", "fat", "free", "fit","fun", "gag", "gym", "gun",
+                "dot", "day", "die", "did", "ear", "end", "eve", "fan", "fat", "foe", "fit", "fun", "gag", "gym", "gun",
                 "ham", "hat", "her", "him", "hit", "ice", "int", "job", "jam", "joy", "kid", "key", "lap", "law", "let",
                 "low", "mac", "mad", "nut", "naw", "ods", "one", "off", "pac", "pay", "pop", "que", "rad", "row", "rum",
                 "rug", "sad", "sit", "spy", "tan", "two", "tub", "use", "var", "van", "war", "wow", "wig", "why", "yaw",
