@@ -68,41 +68,6 @@ namespace Game
                 }
             }
         }
-        static void GameOver() 
-        {
-            aTimer.Stop();
-            PlayGame = false;
-            Console.Clear();
-            Console.WriteLine(@"===============================================");
-            Console.WriteLine("    _____      _____     ___   ____   ______    ");
-            Console.WriteLine(@"   |  ___|    /     \   |   \ /   |  |  ___|   ");
-            Console.WriteLine(@"   |  |  __  |  /_\  |  |    _    |  |  _|     ");
-            Console.WriteLine(@"   |  |_| |  |  | |  |  |   | |   |  |  |__    ");
-            Console.WriteLine( "   |______|  |__| |__|  |___| |___|  |_____|   ");
-            Console.WriteLine();
-            Console.WriteLine("     ______   ___    ___  _______   ______      ");
-            Console.WriteLine(@"    |  __  | |   |  |   | |  ___|  |  __  |    ");
-            Console.WriteLine(@"    | |  | |  \   \/   /  |  _|    |  |/  /    ");
-            Console.WriteLine(@"    | |__| |   \      /   |  |__   |  |\  \    ");
-            Console.WriteLine(@"    |______|    \____/    |_____|  |__| \__\   ");
-            Console.WriteLine();
-            Console.WriteLine("================================================");
-            Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
-
-            Console.WriteLine("\nPress enter to continue, q for exit...");
-            string _startOver = Console.ReadLine();
-
-            if (_startOver == "q")
-            {
-                Console.WriteLine("Good bye!");
-                System.Environment.Exit(-1);
-            }
-            else
-            {   
-                PlayGame = true;
-                _countDown = 5;
-            }
-        }
 
         static void Game(bool play, string name, string ChoosenLevel)
         {
@@ -126,8 +91,7 @@ namespace Game
                     }
                     else if (ChoosenLevel == "h")
                     {
-                        //string randomChar = Level.GetLongWord();
-                        randomChar = "svårt";
+                        randomChar = Level.GetLongWord();
                     }
                     else
                     {
@@ -164,6 +128,42 @@ namespace Game
             }
         }
 
+        static void GameOver() 
+        {
+            aTimer.Stop();
+            PlayGame = false;
+            Console.Clear();
+            Console.WriteLine(@"===============================================");
+            Console.WriteLine("    _____      _____     ___   ____   ______    ");
+            Console.WriteLine(@"   |  ___|    /     \   |   \ /   |  |  ___|   ");
+            Console.WriteLine(@"   |  |  __  |  /_\  |  |    _    |  |  _|     ");
+            Console.WriteLine(@"   |  |_| |  |  | |  |  |   | |   |  |  |__    ");
+            Console.WriteLine( "   |______|  |__| |__|  |___| |___|  |_____|   ");
+            Console.WriteLine();
+            Console.WriteLine("     ______   ___    ___  _______   ______      ");
+            Console.WriteLine(@"    |  __  | |   |  |   | |  ___|  |  __  |    ");
+            Console.WriteLine(@"    | |  | |  \   \/   /  |  _|    |  |/  /    ");
+            Console.WriteLine(@"    | |__| |   \      /   |  |__   |  |\  \    ");
+            Console.WriteLine(@"    |______|    \____/    |_____|  |__| \__\   ");
+            Console.WriteLine();
+            Console.WriteLine("================================================");
+            Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
+
+            Console.WriteLine("\nPress enter to continue, q for exit...");
+            string _startOver = Console.ReadLine();
+
+            if (_startOver == "q")
+            {
+                Console.WriteLine("Good bye!");
+                System.Environment.Exit(-1);
+            }
+            else
+            {   
+                PlayGame = true;
+                _countDown = 5;
+            }
+        }
+
         public static void ClearCurrentConsoleLine()
         {
             int currentLineCursor = Console.CursorTop;
@@ -192,6 +192,7 @@ namespace Game
 
         public static string GetLetter()
         {
+            //one letter, Level Easy
             int num = _random.Next(0, 26);
             char let = (char)('a' + num);
             string letToString = let.ToString();
@@ -200,13 +201,31 @@ namespace Game
 
         public static string GetShortWord()
         {
+            //three letter word, Level Medium
             List<string> list = new List<string> { 
-                "add", "age", "abs", "and", "buy", "big", "bud", "bin", "cop", "car", "cry", "cop", "cod", "dad", "duh",
+                "add", "age", "abs", "and", "buy", "big", "bud", "bin", "cop", "car", "cry", "cop", "css", "dad", "duh",
                 "dot", "day", "die", "did", "ear", "end", "eve", "fan", "fat", "foe", "fit", "fun", "gag", "gym", "gun",
                 "ham", "hat", "her", "him", "hit", "ice", "int", "job", "jam", "joy", "kid", "key", "lap", "law", "let",
-                "low", "mac", "mad", "nut", "naw", "ods", "one", "off", "pac", "pay", "pop", "que", "rad", "row", "rum",
-                "rug", "sad", "sit", "spy", "tan", "two", "tub", "use", "var", "van", "war", "wow", "wig", "why", "yaw",
-                "yep", "yes", "zip", "zoo"
+                "low", "mac", "mad", "net", "naw", "ods", "one", "off", "php", "pay", "pop", "que", "rad", "row", "rum",
+                "rug", "sad", "sit", "sql", "tan", "two", "top", "use", "var", "van", "war", "wow", "wig", "why", "yaw",
+                "www", "yep", "yes", "zip", "zoo"
+            };
+            var shortWord = _random.Next(list.Count);
+            return list[shortWord];
+        }
+
+        public static string GetLongWord()
+        {
+            //five letter word, Level Hard...
+            List<string> list = new List<string> { 
+                "aside", "arrow", "audio", "apple", "above", "buffy", "brain", "build", "bring", "cards", "caput", "camel",
+                "carbs", "cabin", "darns", "dated", "dance", "delta", "extra", "event", "evoke", "error", "ester", "fakir",
+                "faded", "fanny", "false", "games", "galax", "genre", "hacks", "hairy", "hawks", "heigh", "idiot", "icons",
+                "issue", "jelly", "joins", "jokes", "kebab", "knows", "koala", "knife", "lable", "lower", "level", "macro",
+                "mains", "major", "maker", "magic", "nerds", "noise", "noble", "obese", "oddly", "offer", "owner", "paint",
+                "panda", "paris", "paper", "pearl", "query", "quack", "queen", "quick", "radio", "rainy", "range", "ranks",
+                "saint", "sakes", "scale", "sassy", "table", "tails", "taken", "tango", "ultra", "urban", "units", "under",
+                "vaild", "value", "video", "views", "words", "watch", "world", "yahoo", "yards", "yummy", "zebra", "zombi"
             };
             var shortWord = _random.Next(list.Count);
             return list[shortWord];
