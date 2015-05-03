@@ -15,8 +15,8 @@ namespace Game
         static int _countDown = 5;
         static string Name { get; set; }
         static int Score { get; set; }
-        static bool hej = true;
 
+        //static bool hej = false;
 
         public static void Main()
         {
@@ -24,9 +24,15 @@ namespace Game
             Console.Write("Enter your name: ");
             Name = Console.ReadLine().ToLower();
             Console.Clear();
+            bool hej = false;
 
-            BeforeGame();
-            Game(true, Name);
+
+            while(true)
+            {
+                BeforeGame();
+                Game(true, Name);
+                GameOver();
+            } 
         }
 
         public static void BeforeGame()
@@ -62,9 +68,45 @@ namespace Game
                 }
             }
         }
+        static void GameOver() 
+        {
+            aTimer.Stop();
+            PlayGame = false;
+            Console.Clear();
+            Console.WriteLine(@"===============================================");
+            Console.WriteLine("    _____      _____     ___   ____   ______    ");
+            Console.WriteLine(@"   |  ___|    /     \   |   \ /   |  |  ___|   ");
+            Console.WriteLine(@"   |  |  __  |  /_\  |  |    _    |  |  _|     ");
+            Console.WriteLine(@"   |  |_| |  |  | |  |  |   | |   |  |  |__    ");
+            Console.WriteLine( "   |______|  |__| |__|  |___| |___|  |_____|   ");
+            Console.WriteLine();
+            Console.WriteLine("     ______   ___    ___  _______   ______      ");
+            Console.WriteLine(@"    |  __  | |   |  |   | |  ___|  |  __  |    ");
+            Console.WriteLine(@"    | |  | |  \   \/   /  |  _|    |  |/  /    ");
+            Console.WriteLine(@"    | |__| |   \      /   |  |__   |  |\  \    ");
+            Console.WriteLine(@"    |______|    \____/    |_____|  |__| \__\   ");
+            Console.WriteLine();
+            Console.WriteLine("================================================");
+            Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
+
+            Console.WriteLine("\nPress any key to continue, q for exit...");
+            string _startOver = Console.ReadLine();
+
+            if (_startOver == "q")
+            {
+                Console.WriteLine("Good bye!");
+                System.Environment.Exit(-1);
+            }
+            else
+            {   
+                PlayGame = true;
+                _countDown = 5;
+            }
+        }
+
         static void Game(bool play, string name)
         {
-            if (play == true)
+            if (play)
             {
                 Console.Clear();
                 Score = 0;
@@ -74,7 +116,6 @@ namespace Game
                 aTimer = new System.Timers.Timer(1000);
                 aTimer.Elapsed += ClockEvent;
                 aTimer.Enabled = true;
-
 
                 while (PlayGame)
                 {
@@ -87,7 +128,6 @@ namespace Game
 
                     if (PlayGame)
                     {
-                        Console.Write("  ");
                         answer = Console.ReadLine();
                     }
                     else
@@ -107,6 +147,8 @@ namespace Game
                         Console.SetCursorPosition(2, 2);
                     }
                 }
+
+
             }
         }
 
@@ -125,49 +167,15 @@ namespace Game
 
         static void ClockEvent(Object source, ElapsedEventArgs e)
         {
+
             if (PlayGame)
             {
                 if (_countDown-- <= 0)
                 {
-                    aTimer.Stop();
-                    PlayGame = false;
-                    Console.Clear();
-                    Console.WriteLine(@"===============================================");
-                    Console.WriteLine("    _____      _____     ___   ____    ______  ");
-                    Console.WriteLine(@"   |  ___|    /     \   |   \ /    |  |  ___|  ");
-                    Console.WriteLine(@"   |  |  __  |  /_\  |  |    _     |  |  _|    ");
-                    Console.WriteLine(@"   |  |_| |  |  | |  |  |   |  |   |  |  |__   ");
-                    Console.WriteLine("   |______|  |__| |__|  |___|  |___|  |_____|  ");
-                    Console.WriteLine();
-                    Console.WriteLine("     ______   ___    ___  _______   ______     ");
-                    Console.WriteLine(@"    |  __  | |   |  |   | |   __|  |  __  |    ");
-                    Console.WriteLine(@"    | |  | |  \   \/   /  |  _|    |  |/  /    ");
-                    Console.WriteLine(@"    | |__| |   \      /   |  |__   |  |\  \    ");
-                    Console.WriteLine(@"    |______|    \____/    |_____|  |__| \__\   ");
-                    Console.WriteLine();
-                    Console.WriteLine("================================================");
-                    Console.WriteLine("      <<--- {0}: you got {1} points --->>", Name, Score);
-
-                    //Console.WriteLine("Press y to start over");
-                    //var x = Console.ReadLine();
-                    //while (x == "y")
-                    //{
-                    //PlayGame = true;
-                    //BeforeGame();
-                    //Game(true, Name);
-                    //}
-
-                }
-                else
-                {
-
-                    //Console.SetCursorPosition(0, 0); 
-                    //Console.WriteLine("Seconds left {0}: ", _countDown);
-
+                    GameOver();
                 }
             }
         }
-
 
     }
 
