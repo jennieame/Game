@@ -16,16 +16,13 @@ namespace Game
         static string Name { get; set; }
         static int Score { get; set; }
 
-        //static bool hej = false;
-
         public static void Main()
         {
+
             Console.WriteLine(">>--- KNOW YOUR KEYBOARD ---<<");
             Console.Write("Enter your name: ");
             Name = Console.ReadLine().ToLower();
             Console.Clear();
-            bool hej = false;
-
 
             while(true)
             {
@@ -119,7 +116,8 @@ namespace Game
 
                 while (PlayGame)
                 {
-                    string randomChar = RandomLetter.GetLetter();
+                    //string randomChar = RandomLetter.GetLetter();
+                    string randomChar = Level.GetShortWord();
                     Console.SetCursorPosition(2, 2);
                     Console.WriteLine(randomChar);
                     var answer = "";
@@ -179,9 +177,10 @@ namespace Game
 
     }
 
-    static class RandomLetter
+    static class Level
     {
         static Random _random = new Random();
+
         public static string GetLetter()
         {
             int num = _random.Next(0, 26);
@@ -189,8 +188,21 @@ namespace Game
             string letToString = let.ToString();
             return letToString;
         }
-    }
 
+        public static string GetShortWord()
+        {
+            List<string> list = new List<string> { 
+                "add", "age", "abs", "and", "buy", "big", "bud", "bin", "cop", "car", "cry", "cop", "cod", "dad", "duh",
+                "dot", "day", "die", "did", "ear", "end", "eve", "fan", "fat", "free", "fit","fun", "gag", "gym", "gun",
+                "ham", "hat", "her", "him", "hit", "ice", "int", "job", "jam", "joy", "kid", "key", "lap", "law", "let",
+                "low", "mac", "mad", "nut", "naw", "ods", "one", "off", "pac", "pay", "pop", "que", "rad", "row", "rum",
+                "rug", "sad", "sit", "spy", "tan", "two", "tub", "use", "var", "van", "war", "wow", "wig", "why", "yaw",
+                "yep", "yes", "zip", "zoo"
+            };
+            var shortWord = _random.Next(list.Count);
+            return list[shortWord];
+        }
+    }
 
 
 }
