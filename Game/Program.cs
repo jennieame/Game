@@ -21,14 +21,15 @@ namespace Game
         {
 
             Console.WriteLine(">>--- KNOW YOUR KEYBOARD ---<<");
-            Console.Write("Enter your name: ");
+            Console.Write("\nEnter your name: ");
             Name = Console.ReadLine().ToLower();
-            Console.Clear();
-            Console.Write("Choose Level: ");
-            ChoosenLevel = Console.ReadLine().ToLower();
 
             while(true)
             {
+                Console.Clear();
+                Console.WriteLine("Choose Level (e:easy, m:medium, h:hard | easy by defult): ");
+                ChoosenLevel = Console.ReadLine().ToLower();
+                
                 BeforeGame();
                 Game(true, Name, ChoosenLevel);
                 GameOver();
@@ -85,11 +86,11 @@ namespace Game
 
                 while (PlayGame)
                 {
-                    if (ChoosenLevel == "m")
+                    if (ChoosenLevel == "m" || ChoosenLevel == "medium")
                     {
                         randomChar = Level.GetShortWord();
                     }
-                    else if (ChoosenLevel == "h")
+                    else if (ChoosenLevel == "h" || ChoosenLevel == "hard")
                     {
                         randomChar = Level.GetLongWord();
                     }
@@ -148,6 +149,8 @@ namespace Game
             Console.WriteLine();
             Console.WriteLine("================================================");
             Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
+
+            Thread.Sleep(1000);
 
             Console.WriteLine("\nPress enter to continue, q for exit...");
             string _startOver = Console.ReadLine();
