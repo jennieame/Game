@@ -20,27 +20,62 @@ namespace Game
 
         public static void Main()
         {
-
-
+            Console.Clear();
+            Console.WriteLine("");
             Console.WriteLine(">>--- KNOW YOUR KEYBOARD ---<<");
+            Console.WriteLine("");
+            Console.WriteLine("");
 
-            Console.WriteLine("How do you want to play? ");
-            Console.WriteLine("Tournament or regular game? (press t or r");
+            Console.WriteLine("HOW DO YOU WANT TO PLAY? ");
+            Console.WriteLine("");
+            Console.WriteLine(" >>  Tournament ( press T )");
+            Console.WriteLine(" >>  Single player ( press any key )");
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+
+            Console.WriteLine(" >> help (press h)");
+
             GameType = Console.ReadKey(true);
             gameChar = GameType.KeyChar;
 
             // Console.WriteLine(gameChar); 
 
-            if (GameType.KeyChar == 't')
+            if (gameChar == 't' || gameChar == 'T')
             {
                 Console.Clear();
-                Console.WriteLine(" >>========== LET THE GAMES BEGIN ===========<<");
+                Console.WriteLine("\n>>========== LET THE GAMES BEGIN ===========<<");
                 Tournament.PlayersToTournament();
                 Tournament.TournamentGame();
             }
+            else if (gameChar == 'h' || gameChar == 'H')
+            {
+                Console.Clear();
+                Console.WriteLine();
+                Console.WriteLine();
+
+                Console.WriteLine(">>--- THE RULES ---<<");
+                Console.WriteLine();
+
+                Console.WriteLine("You got 30 sec, to write as many words or letters as possible.\n Just press the same key or type the word that shows and press enter.");
+
+                Console.WriteLine("");
+                Console.WriteLine(">>--- SINGLE PLAYER ---<<");
+                Console.WriteLine("Play against yourself and try to beat your own score");
+                Console.WriteLine("");
+                Console.WriteLine("<<--- TOURNAMENT --->>");
+                Console.WriteLine("Four players, two rounds and one final. Who will be the ultimate master of keys?");
+                Console.WriteLine();
+                Console.WriteLine("Press enter to return ");
+                Console.ReadLine();
+                Console.Clear();
+                Main();
+
+
+            }
             else
             {
-
+                Console.Clear();
                 Console.Write("\nEnter your name: ");
                 string Name = Console.ReadLine().ToLower();
                 player = new Player() { name = Name };
@@ -48,7 +83,9 @@ namespace Game
                 while (true)
                 {
                     Console.Clear();
-                    Console.WriteLine("Choose Level (e:easy, m:medium, h:hard | easy by defult): ");
+                    Console.WriteLine("\n\n  Hi {0} \n", player.name);
+
+                    Console.WriteLine("  Choose Level: \n \n - e:easy, \n - m:medium, \n - h:hard  \n\n (easy by defult): ");
                     ChoosenLevel = Console.ReadLine().ToLower();
 
                     BeforeGame();
@@ -62,31 +99,19 @@ namespace Game
         {
             while (true)
             {
-                Console.WriteLine(">>--- START GAME ---<< \n (write y or yes)");
+                Console.Clear();
+                Console.WriteLine("\n>>--- START GAME ---<< \n (write y or yes)");
                 string Play = Console.ReadLine();
 
                 if (Play == "yes" || Play == "y")
                 {
-                    Console.Clear();
-                    Console.WriteLine("Game starts in: ");
-                    for (int i = 3; i > 0; i--)
-                    {
-                        ClearCurrentConsoleLine();
-                        Console.Write(i);
-                        Thread.Sleep(1000);
-                    }
                     break;
                 }
 
-                else if (Play == "help" || Play == "h")
-                {
-                    Console.WriteLine("<<--- The Roules --->>");
-                    Console.WriteLine("You got 30 sec, to write as many letters at possible.\n Just press write the same key as shows and press enter.");
-                }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("I can't do that, sorry! Press enter to try again: ");
+                    Console.WriteLine("\nI can't do that, sorry! Press enter to try again: ");
                     Console.ReadLine();
                 }
             }
@@ -95,11 +120,11 @@ namespace Game
         public static void CountDown()
         {
             Console.Clear();
-            Console.WriteLine("Game starts in: ");
+            Console.WriteLine(" \n\n          Game starts in: \n");
             for (int i = 3; i > 0; i--)
             {
                 ClearCurrentConsoleLine();
-                Console.Write(i);
+                Console.Write("                 " + i);
                 Thread.Sleep(1000);
             }
         }
@@ -115,7 +140,7 @@ namespace Game
                 CountDown();
                 Console.Clear();
 
-                Console.WriteLine("Player: {0}", player.name);
+                Console.WriteLine("\nPlayer: {0} \n\n", player.name);
 
                 string randomChar;
                 var gameEndsAt = DateTime.Now.AddSeconds(5);
@@ -135,8 +160,9 @@ namespace Game
                         randomChar = Level.GetLetter();
                     }
 
-                    Console.SetCursorPosition(2, 2);
+                    Console.SetCursorPosition(5, 4);
                     Console.WriteLine(randomChar);
+                    Console.WriteLine("\n__________________\n");
                     var answer = "";
 
                     ClearCurrentConsoleLine();
@@ -153,7 +179,7 @@ namespace Game
 
                     if (PlayGame)
                     {
-
+                        Console.Write("     ");
                         answer = Console.ReadLine();
                     }
                     else
@@ -164,8 +190,7 @@ namespace Game
                     if (randomChar == answer)
                     {
                         player.score++;
-
-                        Console.WriteLine("Score: {0}", player.score);
+                        Console.WriteLine("\n \n Score: {0}", player.score);
                         Console.SetCursorPosition(2, 2);
                     }
                     else
@@ -204,19 +229,24 @@ namespace Game
             if (gameChar == 't')
             {
                 Console.ReadLine();
+                Console.ReadLine();
                 Console.Clear();
                 PlayGame = true;
 
             }
             else
             {
-                Console.WriteLine("\nPress enter to continue, q for exit...");
+                Console.WriteLine("\n\n         PRESS ENTER TO TRY AGAIN \n\n\n >> exit (q) \n >> return to start (r)");
                 string _startOver = Console.ReadLine();
 
-                if (_startOver == "q")
+                if (_startOver == "q" || _startOver == "Q")
                 {
                     Console.WriteLine("Good bye!");
                     System.Environment.Exit(-1);
+                }
+                else if (_startOver == "r" || _startOver == "R")
+                {
+                    Main();
                 }
                 else
                 {
@@ -281,8 +311,8 @@ namespace Game
         public static void PlayRound(int i, string type)
         {
 
-            Console.WriteLine("{0} ARE YOU READY?", chosenPlayer.ElementAt(i).name.ToUpper());
-            Console.WriteLine("(press enter)");
+            Console.WriteLine("\n {0} ARE YOU READY?", chosenPlayer.ElementAt(i).name.ToUpper());
+            Console.WriteLine("\n(press enter)");
 
             Console.ReadLine();
 
@@ -305,18 +335,19 @@ namespace Game
 
             Console.WriteLine("");
 
-            Console.WriteLine("FIRST GAME: ");
+            Console.WriteLine("\n====>> FIRST GAME <<====\n ");
             Console.WriteLine(" {0} vs. {1}", p1.name, p2.name);
             Console.WriteLine("");
 
-            Console.WriteLine("SECOND GAME: ");
+            Console.WriteLine("\n====>> SECOND GAME <<====\n ");
             Console.WriteLine(" {0} vs. {1}", p3.name, p4.name);
 
             Console.ReadLine();
+
             Console.Clear();
 
-            Console.WriteLine("FIRST UP: ");
-            Console.WriteLine(" {0}", p1.name);
+            Console.WriteLine("\n ====>> FIRST UP <<==== \n");
+            Console.WriteLine(" {0} vs. {1}", p1.name, p2.name);
             Console.ReadLine();
 
             // Round 1: 
@@ -335,10 +366,12 @@ namespace Game
                     }
                 }
 
-                Console.WriteLine(IsWinner(p1, p2));
+                Console.WriteLine("\n   " + IsWinner(p1, p2));
 
             }
 
+            Console.WriteLine("\n ====>> NEXT ROUND <<==== \n ");
+            Console.WriteLine("   {0} vs. {1}", p3.name, p4.name);
             Console.ReadLine();
 
             while (!p4.winner && !p3.winner)
@@ -363,11 +396,11 @@ namespace Game
 
             Console.ReadLine();
 
-            var winner1 = chosenPlayer.Find(player => player.winner == true);
-            var winner2 = chosenPlayer.Skip(1).First(player => player.winner == true);
+            var winner1 = chosenPlayer.First(player => player.winner == true);
+            var winner2 = chosenPlayer.Last(player => player.winner == true);
 
 
-            Console.WriteLine("LA GRANDE FINALE: ");
+            Console.WriteLine("\n ====> LA GRANDE FINALE <<==== \n ");
             Console.WriteLine("{0} vs. {1}", winner1.name, winner2.name);
 
             Console.ReadLine();
@@ -376,11 +409,17 @@ namespace Game
 
             var superWinner = chosenPlayer.Find(player => player.winner == true);
 
-            Console.WriteLine("AND THE WINNER IS:");
+            Console.WriteLine("\n AND THE WINNER IS:");
             Thread.Sleep(2000);
-            Console.WriteLine("===================");
+            Console.WriteLine("=================== \n");
             Console.WriteLine("   {0}", superWinner.name);
-            Console.WriteLine("===================");
+            Console.WriteLine("\n=================== \n");
+
+            Console.ReadLine();
+            //Thread.Sleep(2000);
+            Program.Main();
+
+
 
 
 
@@ -407,7 +446,7 @@ namespace Game
             else
             {
                 tie = true;
-                return "IT'S A TIE - GO AGAIN ";
+                return "\n IT'S A TIE AND IT'S GOING TO GET HARDER \n\n          <<--- PLAY AGAIN --->> \n  ";
             }
 
 
@@ -420,15 +459,22 @@ namespace Game
             tie = true;
             while (tie)
             {
-                Program.Game(true, player1, "h");
 
+                Console.WriteLine("\n ====>> FIRST UP <<==== \n");
+                Console.WriteLine(" {0} ", p1.name);
+                Console.ReadLine();
+                Program.Game(true, player1, "h");
+                
+                Console.WriteLine("\n ====>> NEXT UP <<==== \n");
+                Console.WriteLine(" {0} ", p2.name);
+                Console.ReadLine();
                 Program.Game(true, player2, "h");
 
                 IsWinner(player1, player2);
 
                 if (tie)
                 {
-                    Console.WriteLine("IT'S A TIE - GO AGAIN");
+                    Console.WriteLine("\n IT'S A TIE - GO AGAIN");
                     Console.ReadLine();
                 }
 
@@ -499,4 +545,5 @@ namespace Game
 
 
 }
+
 
