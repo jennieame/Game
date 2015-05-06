@@ -36,7 +36,7 @@ namespace Game
                 Console.Clear();
                 Console.WriteLine(" >>========== LET THE GAMES BEGIN ===========<<");
                 Tournament.PlayersToTournament();
-                Tournament.Separate();
+                Tournament.TournamentGame();
             }
             else
             {
@@ -92,16 +92,30 @@ namespace Game
             }
         }
 
+        public static void CountDown()
+        {
+            Console.Clear();
+            Console.WriteLine("Game starts in: ");
+            for (int i = 3; i > 0; i--)
+            {
+                ClearCurrentConsoleLine();
+                Console.Write(i);
+                Thread.Sleep(1000);
+            }
+        }
+
         public static void Game(bool play, Player player, string ChoosenLevel)
         {
             Program.player = player;
 
             if (play)
             {
-                Console.Clear();
                 player.score = 0;
 
-                Console.WriteLine("Time:  {0}", player.score);
+                CountDown();
+                Console.Clear();
+
+                Console.WriteLine("Player: {0}", player.name);
 
                 string randomChar;
                 var gameEndsAt = DateTime.Now.AddSeconds(5);
@@ -185,12 +199,12 @@ namespace Game
             Console.WriteLine("================================================");
             Console.WriteLine("      >>--- You got {0} points ---<<", player.score);
 
-            Thread.Sleep(1000);
 
-            Console.WriteLine(gameChar);
 
             if (gameChar == 't')
             {
+                Console.ReadLine();
+                Console.Clear();
                 PlayGame = true;
 
             }
@@ -219,15 +233,19 @@ namespace Game
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
-
-
-
     }
 
     class Tournament
     {
         static Random _random = new Random();
         static List<Player> chosenPlayer = new List<Player> { };
+        static bool tie = false;
+
+        // Players
+        static Player p1;
+        static Player p2;
+        static Player p3;
+        static Player p4;
 
 
         public static void PlayersToTournament()
@@ -252,17 +270,38 @@ namespace Game
                 }
             }
 
+            p1 = chosenPlayer.ElementAt(0);
+            p2 = chosenPlayer.ElementAt(1);
+            p3 = chosenPlayer.ElementAt(2);
+            p4 = chosenPlayer.ElementAt(3);
+
 
         }
 
-        public static void Separate()
+        public static void PlayRound(int i, string type)
         {
 
-            // The players: 
-            var p1 = chosenPlayer.ElementAt(0);
-            var p2 = chosenPlayer.ElementAt(1);
-            var p3 = chosenPlayer.ElementAt(2);
-            var p4 = chosenPlayer.ElementAt(3);
+            Console.WriteLine("{0} ARE YOU READY?", chosenPlayer.ElementAt(i).name.ToUpper());
+            Console.WriteLine("(press enter)");
+
+            Console.ReadLine();
+
+            if (type == "regular")
+            {
+                Program.Game(true, chosenPlayer.ElementAt(i), "e");
+            }
+            else if (type == "tie")
+            {
+                Program.Game(true, chosenPlayer.ElementAt(i), "m");
+            }
+            else
+            {
+                Program.Game(true, chosenPlayer.ElementAt(i), "h");
+            }
+        }
+
+        public static void TournamentGame()
+        {
 
             Console.WriteLine("");
 
@@ -281,27 +320,121 @@ namespace Game
             Console.ReadLine();
 
             // Round 1: 
-            for (int i = 0; i <= 1; i++)
+            while (!p1.winner && !p2.winner)
             {
-                Console.WriteLine(chosenPlayer.ElementAt(i).name);
-                Program.Game(true, chosenPlayer.ElementAt(i), "e");
+                for (int i = 0; i <= 1; i++)
+                {
+                    if (tie)
+                    {
+                        PlayRound(i, "tie");
 
-                Console.WriteLine(chosenPlayer.ElementAt(i).score);
-                Console.WriteLine("ARE YOU READY?");
-                Console.WriteLine(chosenPlayer.ElementAt(i + 1).name);
-                Console.ReadLine();
+                    }
+                    else
+                    {
+                        PlayRound(i, "regular");
+                    }
+                }
+
+                Console.WriteLine(IsWinner(p1, p2));
+
             }
 
-            for (int i = 2; i <= 3; i++)
-            {
-                Console.WriteLine(chosenPlayer.ElementAt(i).name);
-                Program.Game(true, chosenPlayer.ElementAt(i), "e");
+            Console.ReadLine();
 
-                Console.WriteLine(chosenPlayer.ElementAt(i).score);
-                Console.WriteLine("ARE YOU READY?");
-                Console.WriteLine(chosenPlayer.ElementAt(i + 1).name);
-                Console.ReadLine();
+            while (!p4.winner && !p3.winner)
+            {
+                for (int i = 2; i <= 3; i++)
+                {
+                    if (tie)
+                    {
+                        PlayRound(i, "tie");
+
+                    }
+                    else
+                    {
+                        PlayRound(i, "regular");
+                    }
+                }
+
+                Console.WriteLine(IsWinner(p3, p4));
+
             }
+
+
+            Console.ReadLine();
+
+            var winner1 = chosenPlayer.Find(player => player.winner == true);
+            var winner2 = chosenPlayer.Skip(1).First(player => player.winner == true);
+
+
+            Console.WriteLine("LA GRANDE FINALE: ");
+            Console.WriteLine("{0} vs. {1}", winner1.name, winner2.name);
+
+            Console.ReadLine();
+
+            FinalGame(winner1, winner2);
+
+            var superWinner = chosenPlayer.Find(player => player.winner == true);
+
+            Console.WriteLine("AND THE WINNER IS:");
+            Thread.Sleep(2000);
+            Console.WriteLine("===================");
+            Console.WriteLine("   {0}", superWinner.name);
+            Console.WriteLine("===================");
+
+
+
+
+        }
+
+        static string IsWinner(Player player1, Player player2)
+        {
+            if (player1.score > player2.score)
+            {
+                player1.winner = true;
+                player2.winner = false;
+                tie = false;
+                return player1.name + " WON";
+            }
+            else if (player1.score < player2.score)
+            {
+                player2.winner = true;
+                player1.winner = false;
+                tie = false;
+                return player2.name + " WON";
+
+            }
+            else
+            {
+                tie = true;
+                return "IT'S A TIE - GO AGAIN ";
+            }
+
+
+
+        }
+
+        static void FinalGame(Player player1, Player player2)
+        {
+
+            tie = true;
+            while (tie)
+            {
+                Program.Game(true, player1, "h");
+
+                Program.Game(true, player2, "h");
+
+                IsWinner(player1, player2);
+
+                if (tie)
+                {
+                    Console.WriteLine("IT'S A TIE - GO AGAIN");
+                    Console.ReadLine();
+                }
+
+            }
+
+
 
         }
 
