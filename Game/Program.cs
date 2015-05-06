@@ -10,30 +10,52 @@ namespace Game
 {
     class Program
     {
-        private static System.Timers.Timer aTimer;
         static bool PlayGame = true;
-        static int _countDown = 5;
-        static string Name { get; set; }
         static string ChoosenLevel { get; set; }
-        static int Score { get; set; }
+        static Player player;
+
+        static ConsoleKeyInfo GameType;
+        static char gameChar { get; set; }
+
 
         public static void Main()
         {
 
-            Console.WriteLine(">>--- KNOW YOUR KEYBOARD ---<<");
-            Console.Write("\nEnter your name: ");
-            Name = Console.ReadLine().ToLower();
 
-            while(true)
+            Console.WriteLine(">>--- KNOW YOUR KEYBOARD ---<<");
+
+            Console.WriteLine("How do you want to play? ");
+            Console.WriteLine("Tournament or regular game? (press t or r");
+            GameType = Console.ReadKey(true);
+            gameChar = GameType.KeyChar;
+
+            // Console.WriteLine(gameChar); 
+
+            if (GameType.KeyChar == 't')
             {
                 Console.Clear();
-                Console.WriteLine("Choose Level (e:easy, m:medium, h:hard | easy by defult): ");
-                ChoosenLevel = Console.ReadLine().ToLower();
-                
-                BeforeGame();
-                Game(true, Name, ChoosenLevel);
-                GameOver();
-            } 
+                Console.WriteLine(" >>========== LET THE GAMES BEGIN ===========<<");
+                Tournament.PlayersToTournament();
+                Tournament.Separate();
+            }
+            else
+            {
+
+                Console.Write("\nEnter your name: ");
+                string Name = Console.ReadLine().ToLower();
+                player = new Player() { name = Name };
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Choose Level (e:easy, m:medium, h:hard | easy by defult): ");
+                    ChoosenLevel = Console.ReadLine().ToLower();
+
+                    BeforeGame();
+                    Game(true, player, ChoosenLevel);
+
+                }
+            }
         }
 
         public static void BeforeGame()
@@ -70,21 +92,21 @@ namespace Game
             }
         }
 
-        static void Game(bool play, string name, string ChoosenLevel)
+        public static void Game(bool play, Player player, string ChoosenLevel)
         {
+            Program.player = player;
+
             if (play)
             {
                 Console.Clear();
-                Score = 0;
+                player.score = 0;
 
-                Console.WriteLine("Time:  {0}", Score);
+                Console.WriteLine("Time:  {0}", player.score);
 
-                aTimer = new System.Timers.Timer(1000);
-                aTimer.Elapsed += ClockEvent;
-                aTimer.Enabled = true;
                 string randomChar;
-
-                while (PlayGame)
+                var gameEndsAt = DateTime.Now.AddSeconds(5);
+                var date = DateTime.Now;
+                while (PlayGame && DateTime.Now < gameEndsAt)
                 {
                     if (ChoosenLevel == "m" || ChoosenLevel == "medium")
                     {
@@ -98,15 +120,26 @@ namespace Game
                     {
                         randomChar = Level.GetLetter();
                     }
-                    
+
                     Console.SetCursorPosition(2, 2);
                     Console.WriteLine(randomChar);
                     var answer = "";
 
                     ClearCurrentConsoleLine();
 
+                    while (!Console.KeyAvailable)
+                    {
+
+                        if (DateTime.Now >= gameEndsAt)
+                        {
+                            PlayGame = false;
+                            break;
+                        }
+                    }
+
                     if (PlayGame)
                     {
+
                         answer = Console.ReadLine();
                     }
                     else
@@ -116,9 +149,9 @@ namespace Game
 
                     if (randomChar == answer)
                     {
-                        Score++;
+                        player.score++;
 
-                        Console.WriteLine("Score: {0}", Score);
+                        Console.WriteLine("Score: {0}", player.score);
                         Console.SetCursorPosition(2, 2);
                     }
                     else
@@ -126,12 +159,14 @@ namespace Game
                         Console.SetCursorPosition(2, 2);
                     }
                 }
+
+                Console.Clear();
+                GameOver(gameChar, player);
             }
         }
 
-        static void GameOver() 
+        public static void GameOver(char gameChar, Player player)
         {
-            aTimer.Stop();
             PlayGame = false;
             Console.Clear();
             Console.WriteLine(@"===============================================");
@@ -139,7 +174,7 @@ namespace Game
             Console.WriteLine(@"   |  ___|    /     \   |   \ /   |  |  ___|   ");
             Console.WriteLine(@"   |  |  __  |  /_\  |  |    _    |  |  _|     ");
             Console.WriteLine(@"   |  |_| |  |  | |  |  |   | |   |  |  |__    ");
-            Console.WriteLine( "   |______|  |__| |__|  |___| |___|  |_____|   ");
+            Console.WriteLine("   |______|  |__| |__|  |___| |___|  |_____|   ");
             Console.WriteLine();
             Console.WriteLine("     ______   ___    ___  _______   ______      ");
             Console.WriteLine(@"    |  __  | |   |  |   | |  ___|  |  __  |    ");
@@ -148,22 +183,31 @@ namespace Game
             Console.WriteLine(@"    |______|    \____/    |_____|  |__| \__\   ");
             Console.WriteLine();
             Console.WriteLine("================================================");
-            Console.WriteLine("      >>--- {0}: you got {1} points ---<<", Name, Score);
+            Console.WriteLine("      >>--- You got {0} points ---<<", player.score);
 
             Thread.Sleep(1000);
 
-            Console.WriteLine("\nPress enter to continue, q for exit...");
-            string _startOver = Console.ReadLine();
+            Console.WriteLine(gameChar);
 
-            if (_startOver == "q")
+            if (gameChar == 't')
             {
-                Console.WriteLine("Good bye!");
-                System.Environment.Exit(-1);
+                PlayGame = true;
+
             }
             else
-            {   
-                PlayGame = true;
-                _countDown = 5;
+            {
+                Console.WriteLine("\nPress enter to continue, q for exit...");
+                string _startOver = Console.ReadLine();
+
+                if (_startOver == "q")
+                {
+                    Console.WriteLine("Good bye!");
+                    System.Environment.Exit(-1);
+                }
+                else
+                {
+                    PlayGame = true;
+                }
             }
         }
 
@@ -175,17 +219,93 @@ namespace Game
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
-        static void ClockEvent(Object source, ElapsedEventArgs e)
-        {
 
-            if (PlayGame)
+
+
+    }
+
+    class Tournament
+    {
+        static Random _random = new Random();
+        static List<Player> chosenPlayer = new List<Player> { };
+
+
+        public static void PlayersToTournament()
+        {
+            List<string> list = new List<string> {
+                "Tobias", "Ervis", "Ulrik","Gustaf B", "Henrik", "Jens P",
+                "Jonatan", "Karl","Lars","Gustav L", "Madeleine", "Mathias",
+                "Max P","Fredrika", "Peter", "Robert", "Max S", "Emil", "Lovisa",
+                "Patrik", "Robin", "John"
+            };
+
+
+            while (chosenPlayer.Count != 4)
             {
-                if (_countDown-- <= 0)
+
+                var player = _random.Next(list.Count);
+                bool match = chosenPlayer.Exists(x => x.name == list[player]);
+
+                if (chosenPlayer.Count <= 3 && !match)
                 {
-                    GameOver();
+                    chosenPlayer.Add(new Player() { name = list[player] });
                 }
             }
+
+
         }
+
+        public static void Separate()
+        {
+
+            // The players: 
+            var p1 = chosenPlayer.ElementAt(0);
+            var p2 = chosenPlayer.ElementAt(1);
+            var p3 = chosenPlayer.ElementAt(2);
+            var p4 = chosenPlayer.ElementAt(3);
+
+            Console.WriteLine("");
+
+            Console.WriteLine("FIRST GAME: ");
+            Console.WriteLine(" {0} vs. {1}", p1.name, p2.name);
+            Console.WriteLine("");
+
+            Console.WriteLine("SECOND GAME: ");
+            Console.WriteLine(" {0} vs. {1}", p3.name, p4.name);
+
+            Console.ReadLine();
+            Console.Clear();
+
+            Console.WriteLine("FIRST UP: ");
+            Console.WriteLine(" {0}", p1.name);
+            Console.ReadLine();
+
+            // Round 1: 
+            for (int i = 0; i <= 1; i++)
+            {
+                Console.WriteLine(chosenPlayer.ElementAt(i).name);
+                Program.Game(true, chosenPlayer.ElementAt(i), "e");
+
+                Console.WriteLine(chosenPlayer.ElementAt(i).score);
+                Console.WriteLine("ARE YOU READY?");
+                Console.WriteLine(chosenPlayer.ElementAt(i + 1).name);
+                Console.ReadLine();
+            }
+
+            for (int i = 2; i <= 3; i++)
+            {
+                Console.WriteLine(chosenPlayer.ElementAt(i).name);
+                Program.Game(true, chosenPlayer.ElementAt(i), "e");
+
+                Console.WriteLine(chosenPlayer.ElementAt(i).score);
+                Console.WriteLine("ARE YOU READY?");
+                Console.WriteLine(chosenPlayer.ElementAt(i + 1).name);
+                Console.ReadLine();
+            }
+
+        }
+
+
 
     }
 
@@ -235,9 +355,15 @@ namespace Game
         }
     }
 
+    class Player
+    {
+
+        public bool winner { get; set; }
+        public string name { get; set; }
+        public int score { get; set; }
+
+    }
+
 
 }
-
-
-
 
