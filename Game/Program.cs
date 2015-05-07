@@ -39,7 +39,6 @@ namespace Game
             GameType = Console.ReadKey(true);
             gameChar = GameType.KeyChar;
 
-            // Console.WriteLine(gameChar); 
 
             if (gameChar == 't' || gameChar == 'T')
             {
@@ -57,7 +56,7 @@ namespace Game
                 Console.WriteLine(">>--- THE RULES ---<<");
                 Console.WriteLine();
 
-                Console.WriteLine("You got 30 sec, to write as many words or letters as possible.\n Just press the same key or type the word that shows and press enter.");
+                Console.WriteLine("You got 15 sec, to write as many words or letters as possible.\n Just press the same key or type the word that shows and press enter.");
 
                 Console.WriteLine("");
                 Console.WriteLine(">>--- SINGLE PLAYER ---<<");
@@ -143,7 +142,7 @@ namespace Game
                 Console.WriteLine("\nPlayer: {0} \n\n", player.name);
 
                 string randomChar;
-                var gameEndsAt = DateTime.Now.AddSeconds(5);
+                var gameEndsAt = DateTime.Now.AddSeconds(15);
                 var date = DateTime.Now;
                 while (PlayGame && DateTime.Now < gameEndsAt)
                 {
@@ -281,16 +280,15 @@ namespace Game
         public static void PlayersToTournament()
         {
             List<string> list = new List<string> {
-                "Tobias", "Ervis", "Ulrik","Gustaf B", "Henrik", "Jens P",
-                "Jonatan", "Karl","Lars","Gustav L", "Madeleine", "Mathias",
-                "Max P","Fredrika", "Peter", "Robert", "Max S", "Emil", "Lovisa",
-                "Patrik", "Robin", "John"
+                "Tobias", "Ulrik", "Gustaf B", "Henrik", "Jens P",
+                "Jonatan", "Karl", "Gustav L", "Mathias",
+                "Max P", "Fredrika", "Peter", "Max S", "Emil", "Lovisa",
+                "Robin", "John", "Ervis", "Lars"
             };
 
 
             while (chosenPlayer.Count != 4)
             {
-
                 var player = _random.Next(list.Count);
                 bool match = chosenPlayer.Exists(x => x.name == list[player]);
 
@@ -461,12 +459,12 @@ namespace Game
             {
 
                 Console.WriteLine("\n ====>> FIRST UP <<==== \n");
-                Console.WriteLine(" {0} ", p1.name);
+                Console.WriteLine(" {0} ", player1.name);
                 Console.ReadLine();
                 Program.Game(true, player1, "h");
                 
                 Console.WriteLine("\n ====>> NEXT UP <<==== \n");
-                Console.WriteLine(" {0} ", p2.name);
+                Console.WriteLine(" {0} ", player2.name);
                 Console.ReadLine();
                 Program.Game(true, player2, "h");
 
@@ -483,8 +481,6 @@ namespace Game
 
 
         }
-
-
 
     }
 
@@ -512,6 +508,7 @@ namespace Game
                 "rug", "sad", "sit", "sql", "tan", "two", "top", "use", "var", "van", "war", "wow", "wig", "why", "yaw",
                 "www", "yep", "yes", "zip", "zoo"
             };
+
             var shortWord = _random.Next(list.Count);
             return list[shortWord];
         }
